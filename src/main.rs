@@ -29,6 +29,7 @@ struct MyApp {
     error: Option<String>,
     execution_time: Option<std::time::Duration>,
     iteration_time: Option<std::time::Duration>,
+    crc_algo: crc::CRC,
 }
 
 impl Default for MyApp {
@@ -40,6 +41,7 @@ impl Default for MyApp {
             error: None,
             execution_time: None,
             iteration_time: None,
+            crc_algo: crc::CRC::new(),
         }
     }
 }
@@ -74,14 +76,14 @@ impl eframe::App for MyApp {
                 let iterations = self.iterations;
 
 
-                let parse_result: Result<Vec<usize>, ParseIntError> = clean_input
+                let parse_result: Result<Vec<u8>, ParseIntError> = clean_input
                     .as_str()
                     .chars()
                     .collect::<Vec<char>>()
                     .chunks(8)
                     .map(|chunk| {
                         let chunk_str: String = chunk.iter().collect();
-                        usize::from_str_radix(&chunk_str, 2)
+                        u8::from_str_radix(&chunk_str, 2)
                     })
                     .collect();
 
@@ -92,12 +94,12 @@ impl eframe::App for MyApp {
 
                 let bytes = parse_result.unwrap();
 
-                let mut output: usize = 0;
+                let mut output: u16 = 0;
 
                 let execution_timer = std::time::Instant::now();
 
                 for _ in 0..iterations {
-                    output = crc::CRC::calculate(&bytes);
+                    output = self.crc_algo.calculate(&bytes);
                 }
 
                 let elapsed = execution_timer.elapsed();
