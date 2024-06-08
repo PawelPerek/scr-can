@@ -49,7 +49,7 @@ impl Default for MyApp {
 impl eframe::App for MyApp {
     fn update(&mut self, ctx: &egui::Context, _frame: &mut eframe::Frame) {
         egui::CentralPanel::default().show(ctx, |ui| {
-            ui.heading("Licznik CRC");
+            ui.heading("Licznik CRC (CAN)");
             ui.horizontal(|ui| {
                 let name_label = ui.label("Bity: ");
                 ui.text_edit_singleline(&mut self.input)
